@@ -5,32 +5,36 @@
   vars:
     keypair: clave-lucatic
     instance_type: t2.micro
-    security_group: default
+    security_group: sg-013c0f1d5466fd440
     subnet_id: subnet-02d7d287d60aad6c3
     image: ami-0b752bf1df193a6c4
     region: eu-west-1
   tasks:
-    - name: Install Galaxy
-      command: ansible-galaxy collection install amazon.aws
-      #commando:
     - name: Launch instance
-      ec2:
+      amazon.aws.ec2_instance:
          key_name: "{{ keypair }}"
-         group: "{{ security_group }}"
+         security_group: "{{ security_group }}"
          instance_type: "{{ instance_type }}"
-         image: "{{ image }}"
+         image_id: "{{ image }}"
+         state: running
+         count: 2
          wait: true
          region: "{{ region }}"
          vpc_subnet_id: "{{ subnet_id }}"
-         assign_public_ip: yes
-         instance_tags:
+         network:   
+           assign_public_ip: yes
+         tags:
            Name: ansibleInstance
            APP: vue2048
       register: ec2
 
+    - name: Print ec2_instance return information
+      ansible.builtin.debug:
+        var: ec2
+
     - name: Add new instance to host group
       add_host:
-        hostname: "{{ item.public_ip }}"
+        hostname: "{{ item.public_ip_address }}"
         groupname: launched
       loop: "{{ ec2.instances }}"
 
