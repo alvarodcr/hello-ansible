@@ -18,18 +18,24 @@
     - name: Clone the repository ZIP to /app
       command: wget https://github.com/alvarodcr/hello-2048/archive/refs/heads/main.zip
 
-    - name: Move main.zip to /app
-      command: mv /home/ec2-user/main.zip /home/ec2-user/app/
-
     - name: Unzip main.zip
-      command: unzip /home/ec2-user/app/main.zip
+      command: unzip main.zip
 
-    - name: Move contents to remote directory
-      copy:
-        src: /home/ec2-user/app/hello-2048-main/public_html/
-        dest: /var/www/html/
-        mode: 0755
-        directory_mode: 0755
+    - name: Move main.zip to /app
+      command: mv /home/ec2-user/hello-2048-main/ /home/ec2-user/app/
+   
+    - name: Move /public_html to /var/www/
+      command: mv /home/ec2-user/app/hello-2048-main/ /var/www/html/
+
+
+
+
+
+
+
+
+
+
 
 
 
